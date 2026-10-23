@@ -5,7 +5,6 @@
 Play **Anstoss 2 Gold** at any size. The game is hard-wired to 640×480 pixels; A2G-Scaler upscales
 its window to fill any window or screen, and mouse and keyboard work just as they normally do.
 
-A standalone tool, separate from the [A2G-Trainer](https://github.com/transfairs/A2G-Trainer).
 User guide (in German): <https://transfairs.github.io/A2G-Scaler/>
 
 Like the game itself, the user interface is in German.
