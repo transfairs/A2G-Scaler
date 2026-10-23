@@ -1,0 +1,30 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+*.exe
+*.pdb
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Test and coverage output
+TestResults/
+coveragereport/
+
+# Release packaging
+dist/
+
+# Local Claude Code instructions, settings and skills
+.claude/
+CLAUDE.md
+
+# Local research notes
+docs/
+
+# Preview written by tools/MakeIcon.cs
+help/img/*.small.png
+
+# Built by dsound-proxy/build.cmd (and by the release workflow)
+dsound-proxy/dsound.dll

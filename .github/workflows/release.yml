@@ -1,0 +1,146 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # windows-2022 guarantees a VS2022 MSBuild with the C++ tools (for dsound.dll); see the trainer's
+    # release.yml for why windows-latest is not used.
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # all tags, for the release notes
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: "[17.0,18.0)"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # Restore and build in separate calls: in one call the xUnit adapter from the freshly restored
+      # packages is not picked up and "dotnet test" finds no tests.
+      - name: Restore tests
+        run: msbuild A2G-Scaler.Tests/A2G-Scaler.Tests.csproj /t:Restore
+
+      - name: Build tests
+        run: msbuild A2G-Scaler.Tests/A2G-Scaler.Tests.csproj /t:Build /p:Configuration=Release
+
+      - name: Run tests
+        run: dotnet test A2G-Scaler.Tests/A2G-Scaler.Tests.csproj --configuration Release --no-build --no-restore
+
+      - name: Inject version from tag
+        shell: pwsh
+        run: |
+          $versionPart = "${{ github.ref_name }}" -replace '^v', ''
+          $segments = @((($versionPart -split '-')[0]) -split '\.')
+          while ($segments.Count -lt 4) { $segments += '0' }
+          $assemblyVersion = ($segments[0..3] -join '.')
+
+          $content = @"
+          using System.Reflection;
+
+          [assembly: AssemblyVersion("$assemblyVersion")]
+          [assembly: AssemblyFileVersion("$assemblyVersion")]
+          [assembly: AssemblyInformationalVersion("$versionPart")]
+          "@
+          Set-Content -Path Properties/VersionInfo.cs -Value $content -Encoding utf8
+
+      - name: Build scaler
+        run: msbuild A2G-Scaler.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86
+
+      - name: Build dsound proxy
+        shell: cmd
+        run: dsound-proxy\build.cmd
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          New-Item -ItemType Directory -Force -Path dist/bundle | Out-Null
+          Copy-Item "bin\x86\Release\A2G-Scaler.exe" "dist\A2G-Scaler-$tag.exe"
+          Copy-Item "dsound-proxy\dsound.dll" "dist\dsound.dll"
+
+          Copy-Item "bin\x86\Release\A2G-Scaler.exe" "dist\bundle\A2G-Scaler.exe"
+          Copy-Item "dsound-proxy\dsound.dll" "dist\bundle\dsound.dll"
+          # German on purpose: it is read by players, like the program's UI. utf8BOM so Notepad on
+          # older Windows shows the umlauts correctly.
+          $readme = @"
+          A2G-Scaler $tag
+          ==================
+
+          Spielt Anstoss 2 Gold größer: Das Spielfenster (640x480) wird auf jede Fenster- oder
+          Bildschirmgröße hochgerechnet, Maus und Tastatur funktionieren ganz normal weiter.
+
+          So geht's
+          ---------
+          1. A2G-Scaler.exe in den Spielordner legen, neben anstoss2.exe
+             (GOG-Fassung: run.exe).
+          2. A2G-Scaler.exe starten. Der Scaler fragt, ob Spiel oder Dateneditor starten soll,
+             startet es im Fenster und dockt sich an.
+          3. Mit der Maus ins Bild fahren und spielen. Zum Herausgehen die Maus am Bildrand
+             kräftig nach außen schieben oder Strg+Alt+S drücken.
+
+          Weitere Tastenkürzel: Strg+Alt+F Vollbild, Strg+Alt+M Skalierungsmodus,
+          Strg+Alt+L Werkzeugleiste. Änderbar über "Tastenkürzel ..." in der Werkzeugleiste.
+
+          Automatisch starten (optional)
+          ------------------------------
+          Liegt auch dsound.dll im Spielordner, startet der Scaler von selbst mit Spiel und
+          Editor und schließt sich mit ihnen. Entfernen: dsound.dll löschen.
+          Manche Virenscanner schlagen bei dieser DLL an, weil sie eine System-DLL ersetzt.
+          Wer ihr nicht traut, lässt sie weg und startet den Scaler von Hand.
+
+          Gut zu wissen
+          -------------
+          - Läuft das Spiel als Administrator, muss auch der Scaler als Administrator laufen.
+          - Einstellungen und Protokoll: %LocalAppData%\A2G-Scaler\ (Windows XP:
+            Lokale Einstellungen\Anwendungsdaten\A2G-Scaler). Der Über-Dialog verlinkt den Ordner.
+          - Voraussetzungen: Windows XP (SP3) oder neuer, .NET Framework 4.0 oder neuer.
+
+          Anleitung: https://transfairs.github.io/A2G-Scaler/
+          Quellcode: https://github.com/transfairs/A2G-Scaler
+          "@
+          Set-Content -Path "dist\bundle\LIESMICH.txt" -Value $readme -Encoding utf8BOM
+
+          $zip = "dist\A2G-Scaler-Latest.zip"
+          Compress-Archive -Path "dist\bundle\*" -DestinationPath $zip -Force
+          $hash = (Get-FileHash -Algorithm SHA256 -Path $zip).Hash.ToLower()
+          "$hash  A2G-Scaler-Latest.zip" | Set-Content "$zip.sha256" -Encoding ascii
+
+      - name: Release notes from commits
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          # Fails (exit 128) for the very first tag: then the notes cover all commits.
+          $previous = git describe --tags --abbrev=0 "$tag^" 2>$null
+          if ($LASTEXITCODE -ne 0) { $previous = $null }
+          $range = if ($previous) { "$previous..$tag" } else { $tag }
+          $lines = @(git log $range --no-merges --pretty=format:"- %s")
+          $header = if ($previous) { "Änderungen seit $previous" } else { "Erste Version" }
+          if ($lines.Count -eq 0) { $lines = @("- Keine Änderungen an Code oder Doku.") }
+          (@("## $header", "") + $lines) -join "`n" | Set-Content dist/notes.md -Encoding utf8
+          # GitHub fails a pwsh step on a leftover non-zero exit code (here from git describe).
+          $global:LASTEXITCODE = 0
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/A2G-Scaler-${{ github.ref_name }}.exe
+            dist/dsound.dll
+            dist/A2G-Scaler-Latest.zip
+            dist/A2G-Scaler-Latest.zip.sha256
+          body_path: dist/notes.md

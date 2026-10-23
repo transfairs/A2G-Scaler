@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>A2GScaler.Tests</RootNamespace>
+    <AssemblyName>A2G-Scaler.Tests</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+    <!-- HotkeyDialog/AboutDialog tests construct real WinForms controls (see StaThread.cs). -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- The scaler is x86-only; a 32-bit test host can load it. -->
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="3.2.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="xunit" Version="2.7.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\A2G-Scaler.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- TargetTests.ImageIn needs a real .ico file. -->
+    <None Include="..\A2G-Scaler.ico" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2G-Scaler :: Anstoss 2 Gold in groß</title>
+<meta name="description" content="A2G-Scaler zeigt Anstoss 2 Gold (640×480) auf jede Fenster- oder Bildschirmgröße hochgerechnet an. Maus und Tastatur funktionieren ganz normal weiter.">
+<link rel="icon" href="img/logo.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app-window">
+
+  <div class="titlebar">
+    <img class="icon" src="img/logo.png" alt="">
+    <div class="title">A2G-Scaler :: Anstoss 2 Gold in groß</div>
+    <a class="version-badge" id="version-badge" href="https://github.com/transfairs/A2G-Scaler/releases/latest" target="_blank" rel="noopener">&#8987;&nbsp;Version wird geladen&hellip;</a>
+    <div class="dots"><span class="min"></span><span class="max"></span><span class="close"></span></div>
+  </div>
+
+  <div class="menustrip">
+    <button data-target="start">Start</button>
+    <button data-target="bedienung">Bedienung</button>
+    <button data-target="autostart">Automatisch starten</button>
+    <button data-target="faq">Fehlerbehebung</button>
+    <button data-target="technik">Wie es funktioniert</button>
+    <button data-target="changelog">Changelog</button>
+    <button data-target="ueber">Über</button>
+  </div>
+
+  <div class="content-area">
+    <div class="layout">
+
+      <nav class="side-list">
+        <h2>Inhalt</h2>
+        <ul>
+          <li><a href="#start" data-target="start">Erste Schritte</a></li>
+          <li><a href="#bedienung" data-target="bedienung">Bedienung</a></li>
+          <li><a href="#autostart" data-target="autostart">Automatisch starten</a></li>
+          <li><a href="#faq" data-target="faq">Fehlerbehebung / FAQ</a></li>
+          <li><a href="#technik" data-target="technik">Wie es funktioniert</a></li>
+          <li><a href="#changelog" data-target="changelog">Changelog</a></li>
+          <li><a href="#ueber" data-target="ueber">Über</a></li>
+        </ul>
+      </nav>
+
+      <!-- ===================== START ===================== -->
+      <section class="panel" id="panel-start">
+        <div class="panel-header">
+          <div class="hero">
+            <img src="img/logo.png" alt="A2G-Scaler-Logo">
+            <div class="hero-text">
+              <h1>A2G-Scaler</h1>
+              <p class="lead">Spielt <strong>Anstoss 2 Gold</strong> größer. Das Spiel kennt nur 640×480 Pixel, auf heutigen Bildschirmen ein Briefmarkenformat. A2G-Scaler zeigt das Spielfenster auf jede Fenster- oder Bildschirmgröße hochgerechnet an, und Maus und Tastatur funktionieren dabei ganz normal weiter.</p>
+            </div>
+          </div>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <div class="download-banner">
+            <div class="download-icon">⬇️</div>
+            <div class="text">
+              <div class="download-heading">
+                <h3>Neueste Version herunterladen</h3>
+                <span class="version-pill" id="download-version">Version wird geladen&hellip;</span>
+              </div>
+              <p>Zip mit <code>A2G-Scaler.exe</code> (keine Installation nötig) und der optionalen <code>dsound.dll</code> für den automatischen Start.</p>
+            </div>
+            <a class="btn-download-lg" href="https://github.com/transfairs/A2G-Scaler/releases/latest/download/A2G-Scaler-Latest.zip">Download</a>
+          </div>
+
+          <div class="compare">
+            <div>
+              <h3>Ohne Scaler</h3>
+              <p>640×480 Pixel, auf einem Full-HD-Monitor ein kleines Fenster in der Ecke. Im Vollbild (<code>/f</code>) unscharf vom Monitor gestreckt oder mit falschem Seitenverhältnis.</p>
+            </div>
+            <div>
+              <h3>Mit Scaler</h3>
+              <p>Das Spiel in jeder Größe, wahlweise pixelgenau oder weich, im Fenster oder im Vollbild, im richtigen 4:3-Verhältnis. Die Maus trifft genau dahin, wo du klickst.</p>
+            </div>
+          </div>
+
+          <fieldset class="groupbox">
+            <legend>So geht's los</legend>
+            <ol>
+              <li>Lege <code>A2G-Scaler.exe</code> in den Spielordner, also neben <code>anstoss2.exe</code> (GOG-Fassung: <code>run.exe</code>).</li>
+              <li>Starte <strong>A2G-Scaler</strong>. Er fragt, ob das <strong>Spiel</strong> oder der <strong>Dateneditor</strong> starten soll, startet es im Fenster und dockt sich an.</li>
+              <li>Fahre mit der Maus ins Bild und spiele wie gewohnt.</li>
+              <li>Zum Herausgehen die Maus am Bildrand kräftig nach außen schieben oder <kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd> drücken.</li>
+            </ol>
+            <p>Schließt du Spiel oder Editor, beendet sich der Scaler mit. Läuft das Spiel schon, dockt er nur an.</p>
+          </fieldset>
+
+          <div class="callout tip">
+            <strong class="label">Scaler liegt woanders?</strong>
+            Auch kein Problem: Anstoss 2 Gold <em>im Fenster</em> starten (also <strong>ohne</strong> den Parameter <code>/f</code> in der Verknüpfung), dann A2G-Scaler starten. Die Reihenfolge ist egal. Der Scaler findet das Spiel selbst und dockt sich auch nach einem Spielneustart wieder an.
+          </div>
+
+          <fieldset class="groupbox">
+            <legend>Voraussetzungen</legend>
+            <ul>
+              <li>Windows XP (SP3) oder neuer. Getestet unter Windows 10 und 11.</li>
+              <li>.NET Framework 4.0 oder neuer (ab Windows 8 bereits vorhanden, für XP, Vista und 7 kostenlos bei Microsoft)</li>
+              <li>Anstoss 2 Gold, Original-CD, 2007er-Version oder GOG-Fassung, und dessen Dateneditor</li>
+            </ul>
+          </fieldset>
+
+          <div class="toc-grid">
+            <a class="toc-card" href="#bedienung" data-jump="bedienung"><h3>Bedienung</h3><p>Tastenkürzel, Skalierungsmodi und Werkzeugleiste.</p></a>
+            <a class="toc-card" href="#autostart" data-jump="autostart"><h3>Automatisch starten</h3><p>Mit der <code>dsound.dll</code> startet der Scaler von selbst mit dem Spiel.</p></a>
+            <a class="toc-card" href="#faq" data-jump="faq"><h3>Fehlerbehebung</h3><p>Wenn etwas nicht klappt.</p></a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================== USAGE ===================== -->
+      <section class="panel" id="panel-bedienung">
+        <div class="panel-header">
+          <h1>Bedienung</h1>
+          <p class="lead">Ins Bild fahren und spielen. Alles Weitere über Tastenkürzel oder die Werkzeugleiste.</p>
+        </div>
+        <div class="subtabs">
+          <button data-sub="kuerzel">Tastenkürzel</button>
+          <button data-sub="modi">Skalierungsmodi</button>
+          <button data-sub="leiste">Werkzeugleiste</button>
+        </div>
+
+        <div class="subpanel" data-sub="kuerzel">
+          <table class="help-table">
+            <tr><th>Tastenkürzel</th><th>Funktion</th></tr>
+            <tr><td><kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd></td><td>Maus aus dem Spiel lösen</td></tr>
+            <tr><td><kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>F</kbd></td><td>Vollbild ein/aus</td></tr>
+            <tr><td><kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd></td><td>Nächster Skalierungsmodus</td></tr>
+            <tr><td><kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>L</kbd></td><td>Werkzeugleiste ein/aus</td></tr>
+          </table>
+          <p>Die Kürzel gelten global, also auch, während das Spiel die Tastatur hat. Ändern kannst du sie über <span class="btn-tag">Tastenkürzel …</span> in der Werkzeugleiste.</p>
+          <div class="callout tip">
+            <strong class="label">Maus ins Spiel und wieder heraus</strong>
+            Sobald die Maus im Bild ist, gehört sie dem Spiel und bleibt dort, auch wenn du sie an den Rand schiebst. Erst ein kräftiger Schub nach außen oder <kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd> gibt sie wieder frei.
+          </div>
+        </div>
+
+        <div class="subpanel" data-sub="modi">
+          <dl class="field-list">
+            <dt>Einpassen (scharf)</dt><dd><strong>Standard.</strong> Erst pixelgenau auf das nächste ganzzahlige Vielfache, dann weich auf die Fenstergröße. Scharf wie Pixel-Art, ohne Rand.</dd>
+            <dt>Einpassen (pixelgenau)</dt><dd>Füllt das Fenster, jedes Spielpixel wird zu einem Block. Bei krummen Faktoren sind Blöcke ungleich breit.</dd>
+            <dt>Einpassen (weich)</dt><dd>Füllt das Fenster mit weicher Interpolation. Am unauffälligsten bei krummen Faktoren, dafür etwas unscharf.</dd>
+            <dt>Integer (pixelgenau)</dt><dd>Nur ganzzahlige Vergrößerung (2×, 3×, …), pixelgenau, mit schwarzem Rand.</dd>
+          </dl>
+          <p>Das Seitenverhältnis bleibt in allen Modi 4:3. Wechseln über die Werkzeugleiste oder <kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>M</kbd>.</p>
+        </div>
+
+        <div class="subpanel" data-sub="leiste">
+          <dl class="field-list">
+            <dt>✕</dt><dd>Blendet die Werkzeugleiste aus. Wieder einblenden mit <kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>L</kbd>. Nach einem Neustart ist sie immer wieder da.</dd>
+            <dt>Modus</dt><dd>Skalierungsmodus wählen.</dd>
+            <dt>Vollbild / Fenster</dt><dd>Zwischen Vollbild und Fenster umschalten. Im Vollbild klappt die Leiste auf, wenn die freie Maus an den oberen Bildschirmrand stößt.</dd>
+            <dt>Statistik</dt><dd>Zeigt rechts Auflösung, Bildrate, Abgriffzeit und ob die Maus im Spiel ist.</dd>
+            <dt>Popups zentrieren</dt><dd>Das Spiel öffnet manche Meldungen in der Bildschirmmitte statt über dem Spiel. Der Scaler verschiebt sie dorthin, wo sie hingehören.</dd>
+            <dt>Tempo-Ausgleich</dt><dd>Macht die Maus im Spiel um den Vergrößerungsfaktor langsamer, damit sie sich trotz großem Bild normal anfühlt.</dd>
+            <dt>Tastenkürzel …</dt><dd>Kürzel ändern.</dd>
+            <dt>Über</dt><dd>Version, Links und der Ordner mit Einstellungen und Protokoll.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <!-- ===================== AUTOSTART ===================== -->
+      <section class="panel" id="panel-autostart">
+        <div class="panel-header">
+          <h1>Automatisch starten</h1>
+          <p class="lead">Mit der optionalen <code>dsound.dll</code> startet der Scaler von selbst, sobald du Spiel oder Editor startest.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <fieldset class="groupbox">
+            <legend>Einrichten</legend>
+            <ol>
+              <li>Lege <code>dsound.dll</code> und <code>A2G-Scaler.exe</code> in den Spielordner, neben <code>anstoss2.exe</code>.</li>
+              <li>Starte Spiel oder Editor wie gewohnt. Der Scaler kommt von selbst dazu und schließt sich mit dem Spiel wieder.</li>
+            </ol>
+            <p><strong>Entfernen:</strong> <code>dsound.dll</code> wieder löschen. Das Spiel lädt dann wie zuvor die DirectSound-DLL von Windows.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Wie das funktioniert</legend>
+            <p>Spiel und Editor laden beim Start <code>dsound.dll</code> (DirectSound). Eine gleichnamige DLL im Spielordner wird zuerst geladen. Die mitgelieferte DLL reicht jeden DirectSound-Aufruf unverändert an die echte DLL von Windows weiter und startet nebenbei den Scaler, angedockt an genau diesen Prozess. Sie liest keine Spieldaten und verändert nichts im Spiel.</p>
+            <p>Weil der Scaler die Prozess-ID bekommt, ist der Dateiname des Spiels egal. Das deckt auch die GOG-Fassung ab.</p>
+          </fieldset>
+
+          <div class="callout warn">
+            <strong class="label">Virenscanner</strong>
+            Eine DLL im Programmordner, die eine System-DLL ersetzt, ist ein Muster, das auch Schadsoftware nutzt. Manche Virenscanner schlagen deshalb bei der <code>dsound.dll</code> an. Wer ihr nicht traut, lässt sie weg und startet den Scaler von Hand, das funktioniert genauso.
+          </div>
+
+          <div class="callout tip">
+            <strong class="label">Vollbild mit <code>/f</code></strong>
+            Startest du das Spiel mit <code>/f</code> im Vollbild, bleibt der Scaler aus, weil es dann nichts zu skalieren gibt. Läuft schon ein Scaler, tritt ein zweiter still zurück.
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================== FAQ ===================== -->
+      <section class="panel" id="panel-faq">
+        <div class="panel-header">
+          <h1>Fehlerbehebung / FAQ</h1>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <fieldset class="groupbox">
+            <legend>Der Scaler zeigt einen Hinweis zu Administratorrechten</legend>
+            <p>Läuft das Spiel <strong>als Administrator</strong>, muss auch A2G-Scaler als Administrator laufen. Windows verhindert sonst, dass ein normales Programm ein Administrator-Programm steuert.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Die Werkzeugleiste ist weg</legend>
+            <p><kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>L</kbd> drücken, oder den Scaler neu starten. Beim Start ist sie immer sichtbar.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Die Maus kommt nicht mehr aus dem Spiel</legend>
+            <p><kbd>Strg</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd> drücken. Wurde das Kürzel geändert, steht das aktuelle in der Statistik-Anzeige der Werkzeugleiste.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Die Maus fühlt sich zu schnell oder zu langsam an</legend>
+            <p><span class="btn-tag">Tempo-Ausgleich</span> in der Werkzeugleiste ein- oder ausschalten.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Der Scaler ist abgestürzt</legend>
+            <p>Beim nächsten Start stellt er alles wieder her, was er am System verändert hatte: Mausgeschwindigkeit, Position des Spielfensters und den Taskleisten-Eintrag des Spiels.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Wo liegen Einstellungen und Protokoll?</legend>
+            <p>Unter <code>%LocalAppData%\A2G-Scaler\</code> (Windows XP: <code>Lokale Einstellungen\Anwendungsdaten\A2G-Scaler</code> im Benutzerprofil). Der Über-Dialog verlinkt den Ordner direkt. Bei Problemen hilft das Protokoll (<code>scaler.log</code>) bei der Fehlersuche, gern als Anhang in einem <a href="https://github.com/transfairs/A2G-Scaler/issues" target="_blank" rel="noopener">GitHub-Issue</a>.</p>
+          </fieldset>
+
+        </div>
+      </section>
+
+      <!-- ===================== HOW IT WORKS ===================== -->
+      <section class="panel" id="panel-technik">
+        <div class="panel-header">
+          <h1>Wie es funktioniert</h1>
+          <p class="lead">Für Neugierige. Zum Benutzen musst du nichts davon wissen.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <fieldset class="groupbox">
+            <legend>Bild</legend>
+            <p>Alle sichtbaren Fenster des Spiels werden per <code>GetDCEx</code>/<code>BitBlt</code> abgegriffen. Das funktioniert auch, wenn sie verdeckt sind, und dauert etwa 4–5&nbsp;ms. Der Scaler setzt sie in der richtigen Reihenfolge zusammen und skaliert sie per <code>StretchBlt</code>. Titelleisten zeichnet Windows selbst, die kommen aus einem <code>PrintWindow</code>-Zwischenspeicher.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Maus</legend>
+            <p>Nach dem Prinzip von <a href="https://github.com/Blinue/Magpie" target="_blank" rel="noopener">Magpie</a>, ohne Code daraus zu übernehmen: Das Spielfenster liegt verdeckt hinter dem Scaler, der Scaler lässt Klicks durch. Der echte Mauszeiger wird auf die passende Stelle im Spiel gesetzt und dort festgehalten, der Systemzeiger versteckt und der Spielzeiger ins skalierte Bild gezeichnet.</p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Selbst bauen</legend>
+            <p>Visual Studio 2019 oder neuer (oder die Build Tools) mit „.NET-Desktopentwicklung“:</p>
+            <p><code>msbuild A2G-Scaler.csproj /restore /t:Rebuild /p:Configuration=Release /p:Platform=x86</code></p>
+            <p>Quellcode auf <a href="https://github.com/transfairs/A2G-Scaler" target="_blank" rel="noopener">GitHub</a>.</p>
+          </fieldset>
+
+        </div>
+      </section>
+
+      <!-- ===================== CHANGELOG ===================== -->
+      <section class="panel" id="panel-changelog">
+        <div class="panel-header">
+          <h1>Changelog</h1>
+          <p class="lead">Live aus den GitHub-Releases.</p>
+        </div>
+        <div class="subpanel active" data-sub="only">
+          <div id="changelog-list"><p class="changelog-status">Wird geladen&hellip;</p></div>
+        </div>
+      </section>
+
+      <!-- ===================== ABOUT ===================== -->
+      <section class="panel" id="panel-ueber">
+        <div class="panel-header">
+          <h1>Über A2G-Scaler</h1>
+        </div>
+        <div class="subpanel active" data-sub="only">
+
+          <fieldset class="groupbox">
+            <legend>Projekt</legend>
+            <p>A2G-Scaler ist ein eigenständiges Programm, das <em>Anstoss 2 Gold</em> und seinen Dateneditor vergrößert anzeigt. Quellcode und Downloads:
+            <a href="https://github.com/transfairs/A2G-Scaler" target="_blank" rel="noopener">github.com/transfairs/A2G-Scaler</a></p>
+          </fieldset>
+
+          <fieldset class="groupbox">
+            <legend>Schwesterprojekt</legend>
+            <p>Der <a href="https://github.com/transfairs/A2G-Trainer" target="_blank" rel="noopener">A2G-Trainer</a> ist ein Editor für Vereine, Spieler und Trainer in Anstoss 2 Gold. Beide Programme sind unabhängig voneinander.</p>
+          </fieldset>
+
+          <div class="callout warn">
+            <strong class="label">Haftungsausschluss</strong>
+            Nutzung auf eigene Gefahr. Das Projekt steht in keiner Verbindung zu Ascaron oder den Entwicklern von <em>Anstoss 2 Gold</em>.
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="footer-note">A2G-Scaler &middot; Projektseite</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
