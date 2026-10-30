@@ -53,8 +53,9 @@ A real higher resolution is therefore out of reach; what remains is scaling the 
   `SetSystemCursor`). The game's cursor is drawn into the picture via `DrawIconEx`.
 - Speed compensation: `SPI_SETMOUSESPEED` divided by the scale factor (→ `Recovery`).
 - **Release only by clearly pushing out at an edge:** raw input deltas with `RIDEV_INPUTSINK`,
-  threshold configurable via *Fangstärke* (`Settings.PushThreshold`, default 100 counts, 50–400 in
-  the menu). Merely touching the edge would make the controls at the top of the game unusable.
+  threshold configurable via *Fangstärke* (`Settings.PushThreshold`, default 100 counts, 0–400 in
+  the menu). Merely touching the edge would make the controls at the top of the game unusable, so
+  0 ("Sofort") is possible but releases on any outward movement at the edge.
   Otherwise via hotkey or on focus loss.
 - **Fullscreen toolbar is a flyout:** it overlays the image instead of shrinking `ViewArea`, so the
   picture does not jump. The form has `WS_CLIPCHILDREN`, otherwise the frame `StretchBlt` paints

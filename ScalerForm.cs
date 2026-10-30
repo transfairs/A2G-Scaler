@@ -30,8 +30,8 @@ namespace A2GScaler
     {
         const string AppName = "A2G-Scaler";
         static readonly string[] ModeNames = { "Einpassen (pixelgenau)", "Einpassen (weich)", "Integer (pixelgenau)", "Einpassen (scharf)" };
-        static readonly string[] PushNames = { "Leicht", "Normal", "Fest", "Sehr fest" };
-        static readonly int[] PushValues = { 50, 100, 200, 400 };   // raw mouse counts, see Settings.PushThreshold
+        static readonly string[] PushNames = { "Sofort", "Leicht", "Normal", "Fest", "Sehr fest" };
+        static readonly int[] PushValues = { 0, 50, 100, 200, 400 };   // raw mouse counts, see Settings.PushThreshold
 
         readonly Settings settings;
         readonly Timer timer = new Timer();

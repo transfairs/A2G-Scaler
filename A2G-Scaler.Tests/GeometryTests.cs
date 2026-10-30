@@ -108,6 +108,17 @@ namespace A2GScaler.Tests
             Assert.Equal(expected, ScalerForm.ReleaseSide(left, right, up, down, 100, fullscreen, Pillarbox, Screen));
         }
 
+        [Theory]
+        [InlineData(1, 0, 0, 0, "links")]
+        [InlineData(0, 1, 0, 0, "rechts")]
+        [InlineData(0, 0, 1, 0, "oben")]
+        [InlineData(0, 0, 0, 1, "unten")]
+        [InlineData(0, 0, 0, 0, null)]   // no outward movement yet, even with threshold 0
+        public void ReleaseSide_ThresholdZero_ReleasesOnAnyOutwardMovement(int left, int right, int up, int down, string expected)
+        {
+            Assert.Equal(expected, ScalerForm.ReleaseSide(left, right, up, down, 0, false, Window, Screen));
+        }
+
         [Fact]
         public void ReleaseSide_FullFrame_NeverReleasesOutsideFullscreen()
         {

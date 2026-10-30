@@ -84,7 +84,7 @@ namespace A2GScaler
         /// <summary>Raw mouse counts of outward push at an edge that free the mouse (100 is roughly 3 mm with an 800 dpi mouse).</summary>
         public int PushThreshold = 100;
         /// <summary>Range accepted for <see cref="PushThreshold"/> from settings.ini; anything else keeps the default.</summary>
-        public const int MinPushThreshold = 20, MaxPushThreshold = 2000;
+        public const int MinPushThreshold = 0, MaxPushThreshold = 2000;
         public Rectangle WindowBounds = Rectangle.Empty;
         public string LastTarget = "";   // process name of the program last picked in the launch dialog
         public readonly Dictionary<HotkeyAction, Keys> Hotkeys = DefaultHotkeys();

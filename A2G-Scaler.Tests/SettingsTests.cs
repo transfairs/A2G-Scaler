@@ -78,8 +78,7 @@ namespace A2GScaler.Tests
         }
 
         [Theory]
-        [InlineData("0")]
-        [InlineData("19")]
+        [InlineData("-1")]
         [InlineData("2001")]
         [InlineData("abc")]
         public void Load_UnusablePushThreshold_KeepsDefault(string value)
@@ -89,7 +88,7 @@ namespace A2GScaler.Tests
         }
 
         [Theory]
-        [InlineData(20)]
+        [InlineData(0)]
         [InlineData(2000)]
         public void Load_PushThresholdAtLimits_IsKept(int value)
         {
