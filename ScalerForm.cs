@@ -382,6 +382,7 @@ namespace A2GScaler
             if (inside) LeaveGame(null, "Vollbildwechsel");
             if (!fullscreen)
             {
+                fullscreen = true;   // before the bounds change below: Move/Resize call RememberBounds, which must not take the fullscreen rectangle for the window size
                 prevState = WindowState;
                 FormBorderStyle = FormBorderStyle.None;
                 WindowState = FormWindowState.Normal;
@@ -393,9 +394,9 @@ namespace A2GScaler
                 FormBorderStyle = FormBorderStyle.Sizable;
                 Bounds = normalBounds;
                 WindowState = prevState;
+                fullscreen = false;   // only now, see above
                 toolbar.Visible = !toolbarHidden;
             }
-            fullscreen = !fullscreen;
             SyncToolbar();
             ClearBackground();
         }

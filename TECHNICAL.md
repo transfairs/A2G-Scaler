@@ -63,6 +63,10 @@ A real higher resolution is therefore out of reach; what remains is scaling the 
   top edge shows it too. `UpdateMouse` does not capture the cursor while it is over the toolbar.
   In fullscreen, ✕ and the toolbar hotkey only close/open the flyout and never touch the
   session-wide `toolbarHidden` (that left the flyout unreachable for good).
+- **Window size across fullscreen:** `fullscreen` is set before the style/bounds change on entering and
+  cleared only after the window is restored on leaving. `Move`/`Resize` call `RememberBounds`, which
+  would otherwise store the fullscreen rectangle as the window's normal bounds (the window came back
+  at screen size).
 
 ## Z-order and taskbar
 
