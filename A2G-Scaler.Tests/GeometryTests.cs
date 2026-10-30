@@ -77,6 +77,42 @@ namespace A2GScaler.Tests
         {
             Assert.Equal(expected, ScalerForm.Push(pressure, atEdge, outward));
         }
+
+        static readonly Rectangle Screen = new Rectangle(0, 0, 1920, 1080);
+        static readonly Rectangle Pillarbox = new Rectangle(240, 0, 1440, 1080);   // free space left and right only
+        static readonly Rectangle Window = new Rectangle(100, 100, 800, 600);      // free space on every side
+
+        [Theory]
+        [InlineData(101, 0, 0, 0, "links")]
+        [InlineData(0, 101, 0, 0, "rechts")]
+        [InlineData(0, 0, 101, 0, "oben")]
+        [InlineData(0, 0, 0, 101, "unten")]
+        [InlineData(100, 100, 100, 100, null)]   // the threshold itself is not enough
+        [InlineData(101, 101, 101, 101, "links")] // order: left, right, up, down
+        [InlineData(0, 101, 101, 101, "rechts")]
+        [InlineData(0, 0, 101, 101, "oben")]
+        public void ReleaseSide_Window(int left, int right, int up, int down, string expected)
+        {
+            Assert.Equal(expected, ScalerForm.ReleaseSide(left, right, up, down, 100, false, Window, Screen));
+        }
+
+        [Theory]
+        [InlineData(0, 0, 101, 0, false, null)]     // no space above the picture
+        [InlineData(0, 0, 0, 101, false, null)]     // nor below
+        [InlineData(101, 0, 0, 0, false, "links")]
+        [InlineData(0, 0, 101, 0, true, "oben")]    // fullscreen: up always opens the flyout
+        [InlineData(101, 0, 101, 0, true, "oben")]  // ... and wins over the sides
+        [InlineData(0, 0, 0, 101, true, null)]
+        public void ReleaseSide_FilledHeight(int left, int right, int up, int down, bool fullscreen, string expected)
+        {
+            Assert.Equal(expected, ScalerForm.ReleaseSide(left, right, up, down, 100, fullscreen, Pillarbox, Screen));
+        }
+
+        [Fact]
+        public void ReleaseSide_FullFrame_NeverReleasesOutsideFullscreen()
+        {
+            Assert.Null(ScalerForm.ReleaseSide(500, 500, 500, 500, 100, false, Screen, Screen));
+        }
     }
 
     public class AttachPidTests

@@ -53,8 +53,16 @@ A real higher resolution is therefore out of reach; what remains is scaling the 
   `SetSystemCursor`). The game's cursor is drawn into the picture via `DrawIconEx`.
 - Speed compensation: `SPI_SETMOUSESPEED` divided by the scale factor (→ `Recovery`).
 - **Release only by clearly pushing out at an edge:** raw input deltas with `RIDEV_INPUTSINK`,
-  threshold about 100 counts. Merely touching the edge would make the controls at the top of the
-  game unusable. Otherwise via hotkey or on focus loss.
+  threshold configurable via *Fangstärke* (`Settings.PushThreshold`, default 100 counts, 50–400 in
+  the menu). Merely touching the edge would make the controls at the top of the game unusable.
+  Otherwise via hotkey or on focus loss.
+- **Fullscreen toolbar is a flyout:** it overlays the image instead of shrinking `ViewArea`, so the
+  picture does not jump. The form has `WS_CLIPCHILDREN`, otherwise the frame `StretchBlt` paints
+  over it. Pushing up out of the game always releases in fullscreen (even with no space above the
+  picture), puts the cursor on the top screen edge and shows the toolbar; a free cursor touching the
+  top edge shows it too. `UpdateMouse` does not capture the cursor while it is over the toolbar.
+  In fullscreen, ✕ and the toolbar hotkey only close/open the flyout and never touch the
+  session-wide `toolbarHidden` (that left the flyout unreachable for good).
 
 ## Z-order and taskbar
 

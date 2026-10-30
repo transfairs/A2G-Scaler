@@ -39,7 +39,7 @@ of the picture or press **Ctrl+Alt+S**.
 | Ctrl+Alt+L | Show/hide the toolbar |
 
 The hotkeys are system-wide, so they work even while the game has keyboard focus. You can change
-them via **Tastenkürzel …** in the toolbar.
+them via **Optionen › Tastenkürzel …** in the toolbar.
 
 **Scaling modes:** *Einpassen (scharf)* (sharp fit, the default: nearest-neighbour up to the next
 integer multiple, then smoothly down to the window size), *Einpassen (pixelgenau)* (pixel-perfect
@@ -47,9 +47,13 @@ fit), *Einpassen (weich)* (smooth fit), *Integer (pixelgenau)* (pixel-perfect in
 black borders).
 
 **Toolbar:** ✕ (hides the toolbar; Ctrl+Alt+L brings it back, and it always reappears on the next
-start), scaling mode, full screen, statistics, *Popups zentrieren* (the game opens its message boxes
-in the middle of the screen rather than over the game; this option moves them back), *Tempo-Ausgleich*
-(slows the in-game mouse down by the zoom factor so it doesn't feel too fast), hotkeys, about.
+start), scaling mode, full screen, *Optionen*, about. The *Optionen* menu holds: statistics (shown
+at the right end of the toolbar), *Popups zentrieren* (the game opens its message boxes in the middle
+of the screen rather than over the game; this option moves them back), *Tempo-Ausgleich* (slows the
+in-game mouse down by the zoom factor so it doesn't feel too fast), *Fangstärke* (how firmly you have
+to push against an edge to get the mouse back) and *Tastenkürzel …*. In full screen the toolbar
+is hidden and slides out over the picture when you push the mouse up out of the game or touch the
+top screen edge with the free mouse (or press Ctrl+Alt+L); there, ✕ only closes it.
 
 ## Good to know
 

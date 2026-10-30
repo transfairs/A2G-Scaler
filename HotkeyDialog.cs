@@ -9,10 +9,12 @@ namespace A2GScaler
     class HotkeyBox : TextBox
     {
         Keys keys;
+        /// <summary>Raised whenever <see cref="Keys"/> is set, by a key press or in code.</summary>
         public event EventHandler KeysChanged;
 
         public HotkeyBox() { ReadOnly = true; BackColor = SystemColors.Window; ShortcutsEnabled = false; }
 
+        /// <summary>The recorded combination (Keys.None when cleared); setting it updates the text and raises <see cref="KeysChanged"/>.</summary>
         public Keys Keys
         {
             get { return keys; }

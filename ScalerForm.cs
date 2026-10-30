@@ -30,6 +30,8 @@ namespace A2GScaler
     {
         const string AppName = "A2G-Scaler";
         static readonly string[] ModeNames = { "Einpassen (pixelgenau)", "Einpassen (weich)", "Integer (pixelgenau)", "Einpassen (scharf)" };
+        static readonly string[] PushNames = { "Leicht", "Normal", "Fest", "Sehr fest" };
+        static readonly int[] PushValues = { 50, 100, 200, 400 };   // raw mouse counts, see Settings.PushThreshold
 
         readonly Settings settings;
         readonly Timer timer = new Timer();
@@ -78,7 +80,6 @@ namespace A2GScaler
         // Without MagShowSystemCursor (XP, Vista) the system cursors are blanked; these copies of the
         // originals (shared system handle → copy) are what DrawGameCursor then draws into the picture.
         readonly Dictionary<IntPtr, IntPtr> cursorCopies = new Dictionary<IntPtr, IntPtr>();
-        const int PushThreshold = 100;   // raw mouse counts (roughly 3 mm with an 800 dpi mouse)
         int pushLeft, pushRight, pushUp, pushDown;
         readonly byte[] rawBuffer = new byte[64];
 
@@ -88,10 +89,12 @@ namespace A2GScaler
         readonly ToolStripButton hideButton = new ToolStripButton("✕");
         readonly ToolStripDropDownButton modeButton = new ToolStripDropDownButton();
         readonly ToolStripButton fullscreenButton = new ToolStripButton();
-        readonly ToolStripButton statsButton = new ToolStripButton("Statistik");
-        readonly ToolStripButton popupButton = new ToolStripButton("Popups zentrieren");
-        readonly ToolStripButton speedButton = new ToolStripButton("Tempo-Ausgleich");
-        readonly ToolStripButton hotkeyButton = new ToolStripButton("Tastenkürzel …");
+        readonly ToolStripDropDownButton optionsButton = new ToolStripDropDownButton("Optionen");   // keeps the bar short enough for the status text
+        readonly ToolStripMenuItem statsButton = new ToolStripMenuItem("Statistik");
+        readonly ToolStripMenuItem popupButton = new ToolStripMenuItem("Popups zentrieren");
+        readonly ToolStripMenuItem speedButton = new ToolStripMenuItem("Tempo-Ausgleich");
+        readonly ToolStripMenuItem pushButton = new ToolStripMenuItem();
+        readonly ToolStripMenuItem hotkeyButton = new ToolStripMenuItem("Tastenkürzel …");
         readonly ToolStripButton aboutButton = new ToolStripButton("Über");
         readonly ToolStripLabel statsLabel = new ToolStripLabel();
 
@@ -167,6 +170,11 @@ namespace A2GScaler
                 int index = i;
                 modeButton.DropDownItems.Add(ModeNames[i], null, delegate { SetMode((ScaleMode)index); });
             }
+            for (int i = 0; i < PushNames.Length; i++)
+            {
+                int value = PushValues[i];
+                pushButton.DropDownItems.Add(PushNames[i], null, delegate { settings.PushThreshold = value; SyncToolbar(); });
+            }
             hideButton.Click += delegate { ToggleToolbar(); };
             fullscreenButton.Click += delegate { ToggleFullscreen(); };
             statsButton.CheckOnClick = true;
@@ -177,9 +185,12 @@ namespace A2GScaler
             speedButton.CheckedChanged += delegate { settings.SpeedCompensation = speedButton.Checked; };
             hotkeyButton.Click += delegate { EditHotkeys(); };
             aboutButton.Click += delegate { ShowAbout(); };
+            optionsButton.DropDownItems.AddRange(new ToolStripItem[] { statsButton, popupButton, speedButton, pushButton, new ToolStripSeparator(), hotkeyButton });
+            optionsButton.DropDown.ShowItemToolTips = true;
+            pushButton.DropDown.ShowItemToolTips = true;
             statsLabel.Alignment = ToolStripItemAlignment.Right;
             toolbar.Items.AddRange(new ToolStripItem[] { hideButton, new ToolStripSeparator(), modeButton, new ToolStripSeparator(), fullscreenButton, new ToolStripSeparator(),
-                statsButton, popupButton, speedButton, new ToolStripSeparator(), hotkeyButton, aboutButton, statsLabel });
+                optionsButton, aboutButton, statsLabel });
             toolbar.SizeChanged += delegate { ClearBackground(); };
             toolbar.VisibleChanged += delegate { shownMessage = null; ClearBackground(); };
             toolbar.Visible = !toolbarHidden;
@@ -194,14 +205,23 @@ namespace A2GScaler
             modeButton.ToolTipText = "Nächster Modus: " + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Mode]);
             for (int i = 0; i < modeButton.DropDownItems.Count; i++)
                 ((ToolStripMenuItem)modeButton.DropDownItems[i]).Checked = i == (int)settings.Mode;
-            fullscreenButton.Text = (fullscreen ? "Fenster" : "Vollbild") + " (" + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Fullscreen]) + ")";
+            fullscreenButton.Text = fullscreen ? "Fenster" : "Vollbild";
+            fullscreenButton.ToolTipText = "Vollbild ein/aus: " + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Fullscreen]);
             statsButton.Checked = settings.ShowInfo;
+            statsButton.ToolTipText = "Rechts in der Werkzeugleiste Auflösung, Bildrate, Abgriffzeit und Mausstatus anzeigen";
             popupButton.Checked = settings.MovePopups;
             popupButton.ToolTipText = "Popups, die das Spiel in der Bildschirmmitte öffnet, über das Spiel verschieben";
             speedButton.Checked = settings.SpeedCompensation;
             speedButton.ToolTipText = "Mausgeschwindigkeit im Spiel an die Vergrößerung anpassen";
-            hotkeyButton.ToolTipText = "Werkzeugleiste ein/aus: " + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Toolbar]);
-            hideButton.ToolTipText = "Werkzeugleiste ausblenden (wieder einblenden mit " + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Toolbar]) + ")";
+            int push = Array.IndexOf(PushValues, settings.PushThreshold);
+            pushButton.Text = "Fangstärke: " + (push >= 0 ? PushNames[push] : settings.PushThreshold.ToString());
+            pushButton.ToolTipText = "Wie kräftig die Maus am Bildrand nach außen geschoben werden muss, bis sie das Spiel verlässt";
+            for (int i = 0; i < pushButton.DropDownItems.Count; i++)
+                ((ToolStripMenuItem)pushButton.DropDownItems[i]).Checked = i == push;
+            hotkeyButton.ToolTipText = "Tastenkürzel ändern (Werkzeugleiste ein/aus: " + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Toolbar]) + ")";
+            hideButton.ToolTipText = fullscreen
+                ? "Werkzeugleiste zuklappen (öffnet sich wieder am oberen Rand oder mit " + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Toolbar]) + ")"
+                : "Werkzeugleiste ausblenden (wieder einblenden mit " + HotkeyText.Format(settings.Hotkeys[HotkeyAction.Toolbar]) + ")";
             statsLabel.Visible = settings.ShowInfo;
         }
 
@@ -226,11 +246,27 @@ namespace A2GScaler
                 dlg.ShowDialog(this);
         }
 
-        /// <summary>Shows or hides the toolbar for this session (not persisted).</summary>
+        /// <summary>In a window, shows or hides the toolbar for this session (not persisted); in fullscreen, opens or closes the flyout.</summary>
         void ToggleToolbar()
         {
+            if (fullscreen)
+            {
+                if (toolbar.Visible) toolbar.Visible = false;
+                else OpenFlyout("Tastenkürzel");
+                return;
+            }
             toolbarHidden = !toolbarHidden;
-            toolbar.Visible = !toolbarHidden && !fullscreen;
+            toolbar.Visible = !toolbarHidden;
+        }
+
+        /// <summary>Fullscreen: frees the mouse if needed, puts the cursor on the top screen edge (so the flyout does not hide again at once) and shows the toolbar there.</summary>
+        void OpenFlyout(string reason)
+        {
+            Rectangle screen = Screen.FromControl(this).Bounds;
+            Native.POINT p; Native.GetCursorPos(out p);
+            if (inside) LeaveGame(new Point(ToDest(p).X, screen.Top), reason + ", Werkzeugleiste");
+            else Native.SetCursorPos(p.X, screen.Top);
+            toolbar.Visible = true;
         }
 
         /// <summary>Remembers the normal window bounds while neither fullscreen nor maximised.</summary>
@@ -290,9 +326,14 @@ namespace A2GScaler
 
         // ================================================================ window plumbing
 
+        /// <summary>Creates the window layered (needed for click-through via WS_EX_TRANSPARENT) and with WS_CLIPCHILDREN.</summary>
         protected override CreateParams CreateParams
         {
-            get { var cp = base.CreateParams; cp.ExStyle |= Native.WS_EX_LAYERED; return cp; }
+            get
+            {
+                const int WS_CLIPCHILDREN = 0x02000000; // the fullscreen toolbar overlays the image: keep frames from painting over it
+                var cp = base.CreateParams; cp.ExStyle |= Native.WS_EX_LAYERED; cp.Style |= WS_CLIPCHILDREN; return cp;
+            }
         }
 
         /// <summary>Makes the window opaque-layered, registers hotkeys and raw mouse input, sets up cursor hiding and starts the frame timer.</summary>
@@ -345,7 +386,7 @@ namespace A2GScaler
                 FormBorderStyle = FormBorderStyle.None;
                 WindowState = FormWindowState.Normal;
                 Bounds = Screen.FromControl(this).Bounds;
-                toolbar.Visible = false; // auto-shows when the free cursor touches the top screen edge
+                toolbar.Visible = false; // flies out over the image, see UpdateToolbarAutoHide and OnRawMouse
             }
             else
             {
@@ -359,12 +400,15 @@ namespace A2GScaler
             ClearBackground();
         }
 
-        /// <summary>In fullscreen: shows the toolbar when the free cursor touches the top screen edge, hides it again once the cursor moves away or enters the game.</summary>
+        /// <summary>
+        /// In fullscreen the toolbar is a flyout over the image (the image does not move): shown when the free cursor
+        /// touches the top screen edge or pushes up out of the game, hidden again once the cursor moves away or enters the game.
+        /// </summary>
         void UpdateToolbarAutoHide(Native.POINT p)
         {
             if (!fullscreen) return;
             Rectangle screen = Screen.FromControl(this).Bounds;
-            if (!toolbar.Visible && !inside && !toolbarHidden && p.Y <= screen.Top + 1) toolbar.Visible = true;
+            if (!toolbar.Visible && !inside && p.Y <= screen.Top + 1) toolbar.Visible = true;
             else if (toolbar.Visible && (inside || p.Y > screen.Top + toolbar.Height + 30) && !AnyDropDownOpen())
                 toolbar.Visible = false;
         }
@@ -384,7 +428,7 @@ namespace A2GScaler
         {
             get
             {
-                int top = toolbar.Visible ? toolbar.Height : 0;
+                int top = toolbar.Visible && !fullscreen ? toolbar.Height : 0;
                 return new Rectangle(0, top, ClientSize.Width, Math.Max(1, ClientSize.Height - top));
             }
         }
@@ -908,6 +952,7 @@ namespace A2GScaler
                 if (leaveWatch.IsRunning && leaveWatch.ElapsedMilliseconds < 300) return;
                 if (!fgOk || !destScreen.Contains(p.X, p.Y)) return;
                 if (Native.GetAncestor(Native.WindowFromPoint(p), Native.GA_ROOT) != Handle) return;
+                if (toolbar.Visible && toolbar.RectangleToScreen(toolbar.ClientRectangle).Contains(p.X, p.Y)) return; // fullscreen flyout over the image
                 if ((Native.GetAsyncKeyState(0x01) & 0x8000) != 0) return; // not while a button is held
                 EnterGame(p);
                 return;
@@ -952,13 +997,29 @@ namespace A2GScaler
             pushUp = Push(pushUp, atTop, -dy);
             pushDown = Push(pushDown, atBottom, dy);
 
-            // Only release towards a side where there is screen space outside the scaled image.
-            Rectangle screen = Screen.FromRectangle(destScreen).Bounds;
+            string side = ReleaseSide(pushLeft, pushRight, pushUp, pushDown, settings.PushThreshold, fullscreen,
+                destScreen, Screen.FromRectangle(destScreen).Bounds);
             Point v = ToDest(p);
-            if (pushLeft > PushThreshold && destScreen.Left > screen.Left) LeaveGame(new Point(destScreen.Left - 2, v.Y), "links");
-            else if (pushRight > PushThreshold && destScreen.Right < screen.Right) LeaveGame(new Point(destScreen.Right + 1, v.Y), "rechts");
-            else if (pushUp > PushThreshold && destScreen.Top > screen.Top) LeaveGame(new Point(v.X, destScreen.Top - 2), "oben");
-            else if (pushDown > PushThreshold && destScreen.Bottom < screen.Bottom) LeaveGame(new Point(v.X, destScreen.Bottom + 1), "unten");
+            if (side == "oben" && fullscreen) OpenFlyout(side);
+            else if (side == "links") LeaveGame(new Point(destScreen.Left - 2, v.Y), side);
+            else if (side == "rechts") LeaveGame(new Point(destScreen.Right + 1, v.Y), side);
+            else if (side == "oben") LeaveGame(new Point(v.X, destScreen.Top - 2), side);
+            else if (side == "unten") LeaveGame(new Point(v.X, destScreen.Bottom + 1), side);
+        }
+
+        /// <summary>
+        /// The side the mouse is freed towards ("links", "rechts", "oben", "unten"), or null. Only releases towards a
+        /// side where there is screen space outside the scaled image <paramref name="dest"/>. In fullscreen, pushing up
+        /// always releases first: the cursor lands on the top screen edge and the toolbar flies out there.
+        /// </summary>
+        internal static string ReleaseSide(int left, int right, int up, int down, int threshold, bool fullscreen, Rectangle dest, Rectangle screen)
+        {
+            if (up > threshold && fullscreen) return "oben";
+            if (left > threshold && dest.Left > screen.Left) return "links";
+            if (right > threshold && dest.Right < screen.Right) return "rechts";
+            if (up > threshold && dest.Top > screen.Top) return "oben";
+            if (down > threshold && dest.Bottom < screen.Bottom) return "unten";
+            return null;
         }
 
         /// <summary>True while the left, right or middle mouse button is held.</summary>

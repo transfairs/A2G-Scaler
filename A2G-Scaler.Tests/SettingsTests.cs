@@ -17,6 +17,7 @@ namespace A2GScaler.Tests
             Assert.True(s.ShowInfo);
             Assert.True(s.MovePopups);
             Assert.True(s.SpeedCompensation);
+            Assert.Equal(100, s.PushThreshold);
             Assert.False(s.Fullscreen);
             Assert.False(s.Maximized);
             Assert.Equal(Rectangle.Empty, s.WindowBounds);
@@ -44,6 +45,7 @@ namespace A2GScaler.Tests
                 ShowInfo = false,
                 MovePopups = false,
                 SpeedCompensation = false,
+                PushThreshold = 400,
                 Fullscreen = true,
                 Maximized = true,
                 WindowBounds = new Rectangle(work.X + 10, work.Y + 10, 400, 300),
@@ -58,6 +60,7 @@ namespace A2GScaler.Tests
             Assert.False(t.ShowInfo);
             Assert.False(t.MovePopups);
             Assert.False(t.SpeedCompensation);
+            Assert.Equal(400, t.PushThreshold);
             Assert.True(t.Fullscreen);
             Assert.True(t.Maximized);
             Assert.Equal(s.WindowBounds, t.WindowBounds);
@@ -75,7 +78,27 @@ namespace A2GScaler.Tests
         }
 
         [Theory]
-        [InlineData(0, 0, 199, 300)]          // too narrow
+        [InlineData("0")]
+        [InlineData("19")]
+        [InlineData("2001")]
+        [InlineData("abc")]
+        public void Load_UnusablePushThreshold_KeepsDefault(string value)
+        {
+            File.WriteAllText(IniPath, "PushThreshold=" + value + "\n");
+            Assert.Equal(100, Settings.Load().PushThreshold);
+        }
+
+        [Theory]
+        [InlineData(20)]
+        [InlineData(2000)]
+        public void Load_PushThresholdAtLimits_IsKept(int value)
+        {
+            File.WriteAllText(IniPath, "PushThreshold=" + value + "\n");
+            Assert.Equal(value, Settings.Load().PushThreshold);
+        }
+
+        [Theory]
+        [InlineData(0, 0, 199, 300)]         // too narrow
         [InlineData(0, 0, 400, 149)]          // too low
         [InlineData(-100000, -100000, 400, 300)] // on no screen
         public void Load_RejectsUnusableWindowBounds(int x, int y, int w, int h)

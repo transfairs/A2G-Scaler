@@ -81,10 +81,15 @@ namespace A2GScaler
     {
         public ScaleMode Mode = ScaleMode.FitSharp;
         public bool ShowInfo = true, MovePopups = true, SpeedCompensation = true, Fullscreen, Maximized;
+        /// <summary>Raw mouse counts of outward push at an edge that free the mouse (100 is roughly 3 mm with an 800 dpi mouse).</summary>
+        public int PushThreshold = 100;
+        /// <summary>Range accepted for <see cref="PushThreshold"/> from settings.ini; anything else keeps the default.</summary>
+        public const int MinPushThreshold = 20, MaxPushThreshold = 2000;
         public Rectangle WindowBounds = Rectangle.Empty;
         public string LastTarget = "";   // process name of the program last picked in the launch dialog
         public readonly Dictionary<HotkeyAction, Keys> Hotkeys = DefaultHotkeys();
 
+        /// <summary>The default hotkeys: Ctrl+Alt+S release, Ctrl+Alt+F fullscreen, Ctrl+Alt+M next mode, Ctrl+Alt+L toolbar.</summary>
         public static Dictionary<HotkeyAction, Keys> DefaultHotkeys()
         {
             var d = new Dictionary<HotkeyAction, Keys>();
@@ -110,6 +115,8 @@ namespace A2GScaler
                 s.ShowInfo = f.GetBool("ShowInfo", s.ShowInfo);
                 s.MovePopups = f.GetBool("MovePopups", s.MovePopups);
                 s.SpeedCompensation = f.GetBool("SpeedCompensation", s.SpeedCompensation);
+                int push = f.GetInt("PushThreshold", s.PushThreshold);
+                if (push >= MinPushThreshold && push <= MaxPushThreshold) s.PushThreshold = push;
                 s.Fullscreen = f.GetBool("Fullscreen", false);
                 s.Maximized = f.GetBool("Maximized", false);
                 var b = new Rectangle(f.GetInt("WindowX", 0), f.GetInt("WindowY", 0), f.GetInt("WindowW", 0), f.GetInt("WindowH", 0));
@@ -130,6 +137,7 @@ namespace A2GScaler
             f.Set("ShowInfo", ShowInfo);
             f.Set("MovePopups", MovePopups);
             f.Set("SpeedCompensation", SpeedCompensation);
+            f.Set("PushThreshold", PushThreshold);
             f.Set("Fullscreen", Fullscreen);
             f.Set("Maximized", Maximized);
             f.Set("WindowX", WindowBounds.X); f.Set("WindowY", WindowBounds.Y);

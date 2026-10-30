@@ -94,6 +94,7 @@ namespace A2GScaler
             public short Planes, BitCount;
             public int Compression, SizeImage, XPelsPerMeter, YPelsPerMeter, ClrUsed, ClrImportant;
 
+            /// <summary>Header for a top-down (negative height) 32-bit bitmap of <paramref name="w"/> × <paramref name="h"/>.</summary>
             public static BITMAPINFOHEADER TopDown32(int w, int h)
             {
                 return new BITMAPINFOHEADER { Size = Marshal.SizeOf(typeof(BITMAPINFOHEADER)), Width = w, Height = -h, Planes = 1, BitCount = 32 };
